@@ -1,0 +1,748 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moinak Mondal - AI Engineer | Portfolio</title>
+    <meta name="description" content="{% if about_profile %}{{ about_profile.professional_summary|truncatewords:30 }}{% else %}Moinak Mondal - AI Engineer specializing in agentic systems, LLM integration, and RAG pipelines. View my projects, skills, experience, and certifications.{% endif %}">
+    <meta name="keywords" content="AI Engineer, Machine Learning, LLM, RAG, Python, Django, FastAPI, Full Stack">
+    <meta name="author" content="Moinak Mondal">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Moinak Mondal - AI Engineer Portfolio">
+    <meta property="og:description" content="Specialized in agentic systems, LLM integration, and RAG pipelines. {{ total_projects }} projects, multiple certifications.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourdomain.com/">
+    <meta property="og:image" content="https://yourdomain.com/images/logo2.png">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Moinak Mondal - AI Engineer">
+    <meta name="twitter:description" content="Specialized in agentic systems, LLM integration, and RAG pipelines.">
+    <meta name="twitter:image" content="https://yourdomain.com/images/logo2.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://yourdomain.com/">
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Moinak Mondal",
+        "jobTitle": "AI Engineer",
+        "url": "https://yourdomain.com/",
+        "description": "AI Engineer specializing in agentic systems, LLM integration, and RAG pipelines",
+        {% if about_profile %}
+        "sameAs": ["{{ about_profile.github_url }}", "{{ about_profile.linkedin_url }}", "{{ about_profile.twitter_url }}"],
+        {% endif %}
+        "email": "moinak.mondal057@gmail.com"
+    }
+    </script>
+    
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image" href="{% static 'images/logo2.png' %}">
+    
+    <!-- PDF.js for PDF rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsWorker.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+</head>
+
+<body>
+    <!-- Mobile Menu Toggle -->
+    <div class="mobile-menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" role="navigation" aria-label="Main Navigation">
+        <div class="logo">
+            <span class="logo-text" aria-label="Site Logo">M</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#about" aria-label="About section">ABOUT</a></li>
+            <li><a href="#experience" aria-label="Experience section">EXPERIENCE</a></li>
+            <li><a href="#skills" aria-label="Skills section">SKILLS</a></li>
+            <li><a href="#projects" aria-label="Work section">WORK</a></li>
+            <li><a href="#certifications" aria-label="Certifications section">CERTIFICATIONS</a></li>
+            <li><a href="#contact" aria-label="Contact section">CONTACT</a></li>
+        </ul>
+    </nav>
+
+    <!-- Sync Panel — place after </nav> and before mobile-overlay div -->
+    <div id="sync-panel">
+        <button id="sync-btn" title="Sync portfolio with GitHub and Google Drive">
+            <i class="fas fa-sync-alt" id="sync-icon"></i>
+        </button>
+        <div id="sync-status" class="sync-status-hidden">
+            <span id="sync-status-text"></span>
+        </div>
+        <div id="sync-report" class="sync-report-hidden"></div>
+    </div>
+
+    <!-- Overlay for mobile menu -->
+    <div class="mobile-overlay"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-text">
+                <h1 class="greeting">Hi,</h1>
+                <h1 class="name">I'm Moinak,</h1>
+                <h1 class="title">AI Engineer</h1>
+                <p class="subtitle">{% if about_profile %}{{ about_profile.professional_summary }}{% else %}Specialized in agentic systems, LLM integration, and RAG pipelines.{% endif %}</p>
+                <a href="#contact" class="contact-btn">CONTACT ME!</a>
+            </div>
+        </section>
+
+        <!-- About Me Section -->
+        <section id="about">
+            <h2 class="section-title">ABOUT ME</h2>
+            <div class="about-container">
+                <div class="about-content">
+                    {% if about_profile %}
+                    <p>{{ about_profile.professional_summary }}</p>
+                    {% endif %}
+                    <div class="about-highlights">
+                        <div class="highlight-item">
+                            <i class="fas fa-graduation-cap"></i>
+                            <h3>Education</h3>
+                            <p>{{ educations.count }} Qualification{{ educations|pluralize }}</p>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-briefcase"></i>
+                            <h3>Experience</h3>
+                            <p>{{ work_experiences.count }} Position{{ work_experiences|pluralize }}</p>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-project-diagram"></i>
+                            <h3>Projects</h3>
+                            <p>{{ total_projects }} Project{{ total_projects|pluralize }}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Resume Download -->
+                    {% if about_profile.resume_file %}
+                    <div class="resume-download">
+                        <a href="{{ about_profile.resume_file.url }}" class="resume-btn" download>
+                            <i class="fas fa-download"></i> Download Resume/CV
+                        </a>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Social Links -->
+                    {% if about_profile %}
+                    <div class="social-links">
+                        {% if about_profile.github_url %}<a href="{{ about_profile.github_url }}" target="_blank" rel="noopener"><i class="fab fa-github"></i></a>{% endif %}
+                        {% if about_profile.linkedin_url %}<a href="{{ about_profile.linkedin_url }}" target="_blank" rel="noopener"><i class="fab fa-linkedin"></i></a>{% endif %}
+                        {% if about_profile.twitter_url %}<a href="{{ about_profile.twitter_url }}" target="_blank" rel="noopener"><i class="fab fa-twitter"></i></a>{% endif %}
+                        {% if about_profile.other_url %}<a href="{{ about_profile.other_url }}" target="_blank" rel="noopener"><i class="fas fa-globe"></i></a>{% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Skills Section -->
+        <section id="skills">
+            <h2 class="section-title">TECHNICAL SKILLS</h2>
+            
+            <div class="skills-categories">
+                <!-- Languages -->
+                <div class="skill-category">
+                    <div class="category-header">
+                        <i class="fas fa-code"></i>
+                        <h3>Languages</h3>
+                    </div>
+                    <div class="skills-grid">
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fab fa-python"></i></div>
+                            <span>Python</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fab fa-js-square"></i></div>
+                            <span>JavaScript</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fab fa-java"></i></div>
+                            <span>Java</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Frameworks -->
+                <div class="skill-category">
+                    <div class="category-header">
+                        <i class="fas fa-cube"></i>
+                        <h3>Frameworks</h3>
+                    </div>
+                    <div class="skills-grid">
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-square"></i></div>
+                            <span>Django</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-bolt"></i></div>
+                            <span>FastAPI</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fab fa-react"></i></div>
+                            <span>React</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fab fa-node"></i></div>
+                            <span>Node.js</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI/LLM Systems -->
+                <div class="skill-category">
+                    <div class="category-header">
+                        <i class="fas fa-brain"></i>
+                        <h3>AI/LLM Systems</h3>
+                    </div>
+                    <div class="skills-grid">
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-link"></i></div>
+                            <span>LangChain</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-diagram-project"></i></div>
+                            <span>LangGraph</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-magnifying-glass"></i></div>
+                            <span>RAG</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-robot"></i></div>
+                            <span>ReAct Agents</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-wrench"></i></div>
+                            <span>Tool Calling</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-openid"></i></div>
+                            <span>OpenAI</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-sparkles"></i></div>
+                            <span>Gemini</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-circle"></i></div>
+                            <span>Ollama</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Databases -->
+                <div class="skill-category">
+                    <div class="category-header">
+                        <i class="fas fa-database"></i>
+                        <h3>Databases</h3>
+                    </div>
+                    <div class="skills-grid">
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-elephant"></i></div>
+                            <span>PostgreSQL</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-leaf"></i></div>
+                            <span>MySQL</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-leaf"></i></div>
+                            <span>MongoDB</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-cloud"></i></div>
+                            <span>Supabase</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-chart-line"></i></div>
+                            <span>pgvector</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DevOps & Cloud -->
+                <div class="skill-category">
+                    <div class="category-header">
+                        <i class="fas fa-cloud-alt"></i>
+                        <h3>DevOps & Cloud</h3>
+                    </div>
+                    <div class="skills-grid">
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fab fa-docker"></i></div>
+                            <span>Docker</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-cube"></i></div>
+                            <span>GKE</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fab fa-google"></i></div>
+                            <span>Cloud Run</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fab fa-aws"></i></div>
+                            <span>AWS</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fab fa-google"></i></div>
+                            <span>GCP</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-server"></i></div>
+                            <span>Nginx</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Automation -->
+                <div class="skill-category">
+                    <div class="category-header">
+                        <i class="fas fa-gears"></i>
+                        <h3>Automation</h3>
+                    </div>
+                    <div class="skills-grid">
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-wave-square"></i></div>
+                            <span>n8n</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-exchange-alt"></i></div>
+                            <span>REST APIs</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-webhook"></i></div>
+                            <span>Webhooks</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Science -->
+                <div class="skill-category">
+                    <div class="category-header">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Data Science</h3>
+                    </div>
+                    <div class="skills-grid">
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-calculator"></i></div>
+                            <span>NumPy</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-table"></i></div>
+                            <span>Pandas</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-chart-line"></i></div>
+                            <span>Matplotlib</span>
+                        </div>
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-brain"></i></div>
+                            <span>Scikit-learn</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testing -->
+                <div class="skill-category">
+                    <div class="category-header">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>Testing</h3>
+                    </div>
+                    <div class="skills-grid">
+                        <div class="skill-card">
+                            <div class="skill-card-icon"><i class="fas fa-vial"></i></div>
+                            <span>Pytest</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Core Competencies Section -->
+            <div class="competencies-divider"></div>
+            <h2 class="section-subtitle">CORE COMPETENCIES</h2>
+            
+            <div class="competencies-grid">
+                <div class="competency-card">
+                    <div class="competency-icon"><i class="fas fa-lightbulb"></i></div>
+                    <h4>Problem Solving</h4>
+                    <p>Creative and analytical approach to complex challenges</p>
+                </div>
+                <div class="competency-card">
+                    <div class="competency-icon"><i class="fas fa-users"></i></div>
+                    <h4>Team Leadership</h4>
+                    <p>Mentor and guide teams to deliver excellence</p>
+                </div>
+                <div class="competency-card">
+                    <div class="competency-icon"><i class="fas fa-microphone"></i></div>
+                    <h4>Public Speaking</h4>
+                    <p>Clear communication of complex technical concepts</p>
+                </div>
+                <div class="competency-card">
+                    <div class="competency-icon"><i class="fas fa-tasks"></i></div>
+                    <h4>Project Management</h4>
+                    <p>Efficient planning and execution of technical projects</p>
+                </div>
+                <div class="competency-card">
+                    <div class="competency-icon"><i class="fas fa-sitemap"></i></div>
+                    <h4>Networking</h4>
+                    <p>Build meaningful professional relationships</p>
+                </div>
+                <div class="competency-card">
+                    <div class="competency-icon"><i class="fas fa-rocket"></i></div>
+                    <h4>Innovation</h4>
+                    <p>Leverage emerging technologies for solutions</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Experience Section -->
+        {% if work_experiences %}
+        <section id="experience">
+            <h2 class="section-title">EXPERIENCE</h2>
+            <div class="experience-container">
+                {% for exp in work_experiences %}
+                <div class="experience-item">
+                    <h3>{{ exp.job_title }}</h3>
+                    <p class="company">{{ exp.company }} {% if exp.is_current %}<span class="badge current">Current</span>{% endif %}</p>
+                    <p class="duration">
+                        {{ exp.start_date|date:"M Y" }} - 
+                        {% if exp.is_current %}Present{% else %}{{ exp.end_date|date:"M Y" }}{% endif %}
+                    </p>
+                    <p class="description">{{ exp.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Work Section -->
+        <section id="projects">
+            <h2 class="section-title">MY WORK</h2>
+            
+            <!-- MAJOR Projects Grid -->
+            {% if major_projects %}
+            <div class="projects-grid">
+                {% for project in major_projects %}
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="{% static 'images/placeholder.jpg' %}" alt="{{ project.ai_title }} screenshot">
+                    </div>
+                    <div class="project-content">
+                        <h3>{{ project.ai_title }}</h3>
+                        <p>{{ project.ai_summary }}</p>
+                        <div class="project-tech">
+                            {% for feature in project.key_features %}
+                            <span>{{ feature }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="project-links">
+                            <a href="{{ project.repo_url }}" target="_blank"><i class="fas fa-external-link-alt"></i> GitHub Repo</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p style="text-align: center; padding: 40px 0; color: #aaa;">No major projects to display yet. Mark some projects as visible in the admin panel!</p>
+            {% endif %}
+
+            <!-- See All Projects Trigger -->
+            <div class="see-all-projects-container">
+                <a href="#" class="see-all-projects-btn">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Other Projects</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- All Projects Modal (OTHER category) -->
+        <div id="projects-modal" class="modal">
+            <div class="modal-content projects-modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Other Projects</h2>
+                {% if other_projects %}
+                <div class="projects-modal-grid">
+                    {% for project in other_projects %}
+                    <div class="project-card">
+                        <div class="project-img">
+                            <img src="{% static 'images/placeholder.jpg' %}" alt="{{ project.ai_title }}">
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">{{ project.ai_title }}</h3>
+                            <p class="project-description">{{ project.ai_summary }}</p>
+                            <div class="project-techstack">
+                                {% for tech in project.tech_stack %}
+                                <span class="tech">{{ tech }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="project-links">
+                                <a href="{{ project.repo_url }}" class="btn" target="_blank">GitHub Repo</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p style="text-align: center; padding: 40px 0; color: #aaa;">No other projects to display yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Certifications Section -->
+        <section id="certifications">
+            <h2 class="section-title">CERTIFICATIONS</h2>
+            
+            {% if certificates %}
+            <div class="cert-grid">
+                {% for cert in certificates %}
+                <div class="cert-card">
+                    <div class="cert-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="cert-content">
+                        <h3>{{ cert.name }}</h3>
+                        <p class="cert-issuer">{{ cert.issuer }}</p>
+                        <p class="cert-date">{{ cert.issued_date|date:"M Y" }}</p>
+                        {% if cert.pdf_file %}
+                        <a href="{{ cert.pdf_file.url }}" class="cert-link" data-pdf-url="{{ cert.pdf_file.url }}">View Certificate <i class="fas fa-external-link-alt"></i></a>
+                        {% else %}
+                        <span class="cert-link-disabled">No PDF available</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <p>No certificates uploaded yet. Visit the admin panel to add your certifications!</p>
+            </div>
+            {% endif %}
+
+            <!-- Education Section -->
+            <section id="education">
+                <h2 class="section-title">EDUCATION</h2>
+                <div class="experience-container">
+                    {% for edu in educations %}
+                    <div class="experience-item">
+                        <h3>{{ edu.degree }}</h3>
+                        <p class="company">{{ edu.institution }}</p>
+                        <p class="duration">
+                            {{ edu.start_date|date:"M Y" }} - 
+                            {% if edu.end_date %}{{ edu.end_date|date:"M Y" }}{% else %}Expected{% endif %}
+                        </p>
+                        {% if edu.gpa %}
+                        <p class="gpa">GPA/CGPA: <strong>{{ edu.gpa }}</strong></p>
+                        {% endif %}
+                        {% if edu.description %}
+                        <p class="description">{{ edu.description }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="contact">
+                <h2 class="section-title">GET IN TOUCH</h2>
+                <div class="contact-container">
+                    <div class="contact-info">
+                        <h3>Let's Connect!</h3>
+                        <p>I'm always open to discussing new projects, creative ideas, or opportunities to be part of
+                            your visions.</p>
+
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <a href="mailto:moinak.mondal057@gmail.com" title="Send email"
+                                    aria-label="Email Moinak Mondal">
+                                    <span>moinak.mondal057@gmail.com</span>
+                                </a>
+                            </div>
+                            {% if about_profile %}
+                            <div class="contact-social">
+                                <h3>Follow Me</h3>
+                                <div class="social-icons">
+                                    {% if about_profile.github_url %}<a href="{{ about_profile.github_url }}" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>{% endif %}
+                                    {% if about_profile.linkedin_url %}<a href="{{ about_profile.linkedin_url }}" target="_blank" rel="noopener"><i class="fab fa-linkedin"></i> LinkedIn</a>{% endif %}
+                                    {% if about_profile.twitter_url %}<a href="{{ about_profile.twitter_url }}" target="_blank" rel="noopener"><i class="fab fa-twitter"></i> Twitter</a>{% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <form class="contact-form" id="contact-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="text" name="name" id="name" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="email" id="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="subject" id="subject" placeholder="Subject" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" id="message" placeholder="Your Message" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">Send Message</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Social Links -->
+            <div class="social-links">
+                <a href="https://github.com/m0inak057" target="_blank" title="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/moinakm/" target="_blank" title="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://x.com/Moinak_05" target="_blank" title="Twitter">
+                    <i class="fa-brands fa-x"></i>
+                </a>
+            </div>
+        </main>
+
+    <!-- Certificate Modal -->
+    <div id="certificate-modal" class="modal">
+        <div class="modal-content" style="width: 65%; max-width: 700px; max-height: 75vh; padding: 20px; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #00ff88; padding-bottom: 10px;">
+                <h3 style="color: #00ff88; font-size: 18px; margin: 0;">Certificate Preview</h3>
+                <span class="close-modal" style="font-size: 28px; cursor: pointer; color: #00ff88; position: static; top: auto; right: auto;">&times;</span>
+            </div>
+            <div id="certificate-viewer" style="flex: 1; overflow: auto; background-color: #0a0a0a; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; border: 1px solid #00ff88;">
+                <canvas id="certificate-canvas" style="max-width: 100%; max-height: 100%;"></canvas>
+            </div>
+            <div id="certificate-loading" style="flex: 1; overflow: auto; background-color: #0a0a0a; border-radius: 8px; margin-bottom: 15px; display: none; align-items: center; justify-content: center; color: #00ff88; font-size: 16px;">
+                Loading certificate...
+            </div>
+        </div>
+    </div>
+
+    <!-- Education Details Modal -->
+    <div id="education-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="education-modal-title"></h2>
+            <div id="education-modal-content">
+                <!-- B.Tech Details -->
+                <div class="education-details" id="btech-details" style="display: none;">
+                    <ul class="education-details-list">
+                        <li>Core focus on AI/ML algorithms and applications</li>
+                        <li>Advanced coursework in Neural Networks and Deep Learning</li>
+                        <li>Research projects in Computer Vision and NLP</li>
+                        <li>Practical experience with TensorFlow and PyTorch</li>
+                    </ul>
+                </div>
+                <!-- HS Details -->
+                <div class="education-details" id="hs-details" style="display: none;">
+                    <ul class="education-details-list">
+                        <li>Major subjects: Physics, Chemistry, Mathematics</li>
+                        <li>Computer Science with Python programming</li>
+                        <li>Participated in various science exhibitions</li>
+                    </ul>
+                </div>
+                <!-- Secondary Details -->
+                <div class="education-details" id="secondary-details" style="display: none;">
+                    <ul class="education-details-list">
+                        <li>Core subjects with Computer Applications</li>
+                        <li>Java programming in 9th and 10th grade</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        (function () {
+            emailjs.init("qo5LuKIhLWQt8R-lj"); // Your EmailJS public key
+        })();
+    </script>
+    <script src="{% static 'js/sync.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        // Handle contact form submission
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value,
+            };
+            
+            fetch('/api/contact/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value || getCookie('csrftoken'),
+                },
+                body: JSON.stringify(formData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Message sent successfully! We\'ll get back to you soon.');
+                document.getElementById('contact-form').reset();
+            })
+            .catch(error => {
+                alert('Error sending message. Please try again.');
+                console.error('Error:', error);
+            });
+        });
+        
+        // CSRF token helper
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        // Handle projects modal
+        if (document.querySelector('.see-all-projects-btn')) {
+            document.querySelector('.see-all-projects-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('projects-modal').style.display = 'block';
+            });
+        }
+        
+        if (document.querySelector('.close-modal')) {
+            document.querySelector('.close-modal').addEventListener('click', function() {
+                document.getElementById('projects-modal').style.display = 'none';
+            });
+        }
+    </script>
+
+</body>
+
+</html>
